@@ -34,7 +34,7 @@ int main()
             else
                 temp = produto_de_primos[i];
 
-    float tau = 0, sigma = 1;
+    float tau = 1, sigma = 1;
     printf("Resultado da fatoracao prima de %d: [ ", num);
     if (num == 1)
     {
@@ -47,18 +47,22 @@ int main()
         for (int i = 0; i < 106; i++)
             if (expoentes[i] != 0)
             {
-                tau += (expoentes[i] + 1);
+                tau *= (expoentes[i] + 1);
                 sigma *= (pow(i, expoentes[i] + 1) - 1) / (i - 1);
                 printf("%d^%d ", i, expoentes[i]);
             }
     }
 
     printf("]\n");
-    printf("A partir da fatoracao prima obtemos: \n");
-    printf("  1- tau = %.0f\n  2- sigma = %.0f\n", tau, sigma);
+    printf("\nIMPORTANTE: para o calculo de TAU, vamos utilizar a seguinte formula:\n");
+    printf("Produtorio de (Ei + 1), onde 'Ei' e i-esimo expoente que apareca na fatoracao prima\n");
+    printf("\nIMPORTANTE: para o calculo de SIGMA, vamos utilizar a seguinte formula:\n");
+    printf("Produtorio de {[Pi^(Ei + 1) - 1]/[Pi - 1]}, onde 'Ei' e i-esimo expoente e Pi e o i-esimo primo que aparecem na fatoracao prima\n\n");
+    printf("A partir disso obtemos: \n");
+    printf("  1- TAU = %.0f\n  2- SIGMA = %.0f\n", tau, sigma);
 
     float resultado = sigma / tau;
-    printf("\nConsequentemento usando a formula: 'sigma(n)/tau(n)', obtemos a razao de eficiencia de %d...\nResultado: %.2f", num, resultado);
+    printf("\nConsequentemento usando a formula: 'SIGMA(n)/TAU(n)', obtemos a razao de eficiencia de %d...\nResultado: %.2f", num, resultado);
     return 0;
 }
 
