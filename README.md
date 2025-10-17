@@ -22,7 +22,7 @@ Algoritmo de euclides: 2 mod 1 = 0
 
 Substituindo, temos que o inverso de 3 em 11 e 4.
 
-Fazendo a multiplica├º├úo modular: 7 * 4 mod = 11
+Fazendo a multiplicacao modular: 7 * 4 mod = 11
 Sendo 4 o inverso de 3.
 Valor final da congruencia: 4
 
