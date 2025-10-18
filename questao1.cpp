@@ -228,7 +228,7 @@ int exp_mod(int m, int e, int n, int z){
         cout << "Como MDC(" << m << ',' << n << ") = 1, usamos Euler\n";
         return Euler(m, e, n, z);
     }
-    cout << "Como nao tem a condicao de N primo para usar Fermat nem MDC(" << m << ',' << n << ") = 1 para Euler, usamos a Euclidiana:\n";
+    cout << "Como nao tem a condicao de N primo para usar Fermat, nem MDC(" << m << ',' << n << ") = 1 para Euler, usamos a Euclidiana:\n";
     return Euclidiana(m, e, n);
 }
 bool e_primo(int n) {   // como o numero so vai ate 999, posso testar se ele é divisivel por 2, 3, 5, 7, ...
