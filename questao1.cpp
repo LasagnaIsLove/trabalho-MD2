@@ -335,8 +335,8 @@ int Pollard(int n) {
         G1 = ((G1 * G1) + 1) % n;          
         G2 = ((G2 * G2) + 1) % n;          
         G2 = ((G2 * G2) + 1) % n;          
-        d = MDC(abs(G1 - G2), n);
         cout << "Pollard " << i << ": G1 = " << G1 << ", G2 = " << G2 << ", d = " << d << '\n';
+        d = MDC(abs(G1 - G2), n);
         i++;
     }
     return d;
@@ -345,7 +345,10 @@ int Pollard(int n) {
 
 int expoentePublico(int z, int n){
     int e = 2;
+    int i = 1;
     while(e < n){
+        cout << i << "-) ";
+        i++;
         if(MDC(e, z) == 1){
             int d = expoentePrivadoSemPrint(e, z);
             if (d != e)
