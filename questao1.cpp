@@ -79,8 +79,11 @@ int main(){
         cout << "Sua entrada gerou 2 numeros primos iguais\necolha outra entrada: \n";
         goto back;  // volta para a escolhe de N1 e N2
     }
-    cout << "\n----------\nP = " << P << "\nQ = " << Q << "\n----------\n";
-
+    // cout << "\n----------\nP = " << P << "\nQ = " << Q << "\n----------\n";
+    cout << "------------------------------\n";
+    cout << "Fatoracao de N1 = " << N1 << " = " << P << " x " << N1/P << "\n";
+    cout << "Fatoracao de N2 = " << N2 << " = " << Q << " x " << N2/Q << "\n";
+    cout << "------------------------------\n";
 // Geracao de Chaves
 
     int n = P * Q;
@@ -93,7 +96,7 @@ int main(){
     <<     "[Encontrando a chave Privada]\n";
     int d = expoentePrivado(e, z);  
     if(e >= z){
-        cout << "[AVISO], chave publica >= z, causara erro\nDeseja continuar? (S/N): ";
+        cout << "[AVISO] Chave publica >= z, causara erro\nDeseja continuar? (S/N): ";
         char opcao;
         cin >> opcao;
         if(opcao != 'S' && opcao != 's')
@@ -107,10 +110,10 @@ int main(){
             return 1;
     }
     if(d == 1){
-        cout << "[AVISO], chave privada = 1, causara erro\nDeseja continuar? (S/N): ";
+        cout << "[AVISO] Chave privada = 1, causara erro\nDeseja continuar? (S/N): ";
         char opcao;
         cin >> opcao;
-        if(opcao != 'S')
+        if(opcao != 'S' && opcao != 's')
             return 1;
     }
     // Etapa 3 - 
@@ -181,14 +184,14 @@ int main(){
     string fraseMinuscula = frase;    
     transform(fraseMinuscula.begin(), fraseMinuscula.end(), fraseMinuscula.begin(),
           [](unsigned char c){ return tolower(c); });
-    cout << "\nComparando as mensagem desconsiderando a capitalizacao\n";
+    cout << "\n\nComparando as mensagem desconsiderando a capitalizacao\n";
     
     if(mensagemDescript == fraseMinuscula){
-        cout << "______________________________________________\n" << mensagemDescript << " = " << frase;
+        cout << "_______________________________________________________\n" << mensagemDescript << " = " << frase;
         cout << "\nA mensagem foi descriptografada com sucesso!\n";
     }
     else{
-        cout << "______________________________________________\n" << mensagemDescript << " != " << frase;
+        cout << "_______________________________________________________\n" << mensagemDescript << " != " << frase;
         cout << "\nErro na descriptografia!\n";
     }
     return 0;
@@ -278,7 +281,7 @@ char rev_pre_Codificacao(int x){
         return'.';
     else if(x == 93)
         return ';';
-    return '_';
+    return '?';
 }
 vector<int> pre_Codificacao(string frase){ // Ele nao diferencia minuscula e maiuscula ainda
     cout << "----------------------------\n" << 
@@ -304,9 +307,8 @@ vector<int> pre_Codificacao(string frase){ // Ele nao diferencia minuscula e mai
         codificado.push_back(93);
         }
         else{
-            cout << "Caracter " << caracter << " Invalido!\n";
+            cout << "[AVISO] Caracter '" << caracter << "' Invalido!\n";
             codificado.push_back(-99);
-            return codificado;
         }
     }
     return codificado;
