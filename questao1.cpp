@@ -16,7 +16,7 @@ int MDC(int a, int b);
 int MDC_SemPrint(int a, int b); 
 int Pollard(int n); // Usa a função g(x) = ((x² + 1)mod(N)) e raiz X0 = 2
 int expoentePublico(int z, int n);  // Formula para encontrar o 'e'
-int expoentePrivado(int e, int z);  //                          'd'
+int expoentePrivado(int e, int z);  //                          'd', usa euclides estendido
 vector<int> pre_Codificacao(string frase);  // Transforma as letras em codigo numerico de 2 casas
 bool e_primo(int n);                        // retorna se e primo ou nao
 int exp_mod(int m, int e, int n, int z);    // Escolhe qual metodo usar
@@ -48,11 +48,12 @@ int main(){
 
     cout << "Entre os valores de N1 e N2, eles devem ser produtos de primos *distintos* para que o metodo \"P de Polard\" seja eficiente.\n";
     
-    int N1, N2, P, Q; // Vao de 100 a 999
+    int N1, N2, P, Q; // Vao de 100 a 9999
         back:
         
     while(1){
         N1 = LerEntrada("N1");
+        cout << "Pollard usando G(x) = (x^2 + 1)mod(n) e X0 = 2\n";
         P = Pollard(N1);
         cout << "---------------------\n"<< "Pollard para " << N1 << " = " << P << '\n' << "---------------------\n";
         if(!e_primo(P)){
@@ -63,6 +64,7 @@ int main(){
     }
     while(1){
         N2 = LerEntrada("N2");
+        cout << "Pollard usando G(x) = (x^2 + 1)mod(n) e X0 = 2\n";
         Q = Pollard(N2);
         cout << "---------------------\n"<< "Pollard para " << N2 << " = " << Q << '\n' << "---------------------\n";
         if(!e_primo(Q)){
@@ -91,9 +93,10 @@ int main(){
     cout << "Chave Publica: (" << n << ',' << e << ")\n";
     cout << "Chave Privada: (" << n << ',' << d << ")\n";
     cout << "_____________________________________________\nEntre a frase que deseja codificar: \n";
+
     string frase;
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    getline(cin, frase);
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');    // ignora o '\n' anterior
+    getline(cin, frase);    // Le a entrada do usuario (frase)
 
     vector<int> preCriptografado = pre_Codificacao(frase);
     vector<int> Criptografado;
@@ -117,7 +120,9 @@ int main(){
     }
     cout << "----------------------- \n";
 
-// _____________________________________________________________________________
+//-------------------
+// Descriptografia
+
     cout << "\n--------------------------\n";
     cout <<   "    Descriptografia\n";
     cout << "Usando a Chave Privada: (" << n << ',' << d << ")\n";
@@ -147,6 +152,19 @@ int main(){
     cout << "\n--------------------------------------\n" << 
               "     Frase Descriptografada:\n";
     cout << mensagemDescript;
+    string fraseMinuscula = frase;    
+    transform(fraseMinuscula.begin(), fraseMinuscula.end(), fraseMinuscula.begin(),
+          [](unsigned char c){ return tolower(c); });
+    cout << "\nComparando as mensagem desconsiderando a capitalizacao\n";
+    
+    if(mensagemDescript == fraseMinuscula){
+        cout << "______________________________________________\n" << mensagemDescript << " = " << frase;
+        cout << "\nA mensagem foi descriptografada com sucesso!\n";
+    }
+    else{
+        cout << "______________________________________________\n" << mensagemDescript << " != " << frase;
+        cout << "\nErro na descriptografia!\n";
+    }
     return 0;
 }
 
@@ -166,11 +184,11 @@ int Fermat(int a, int exp, int n) {
 
 int Euler(int a, int exp, int n, int z) {
     cout << "[Teorema de Euler]\n";
-    cout << "Condicao: mdc(a, n) = 1 -> a^phi(n) === 1 (mod n)\n";
+    cout << "Condicao: mdc(a, n) = 1 -> a^z === 1 (mod n)\n";
 
-    // Reduz expoente usando φ(n)
+    // Reduz expoente usando Z
     int exp_reduzido = exp % z;
-    cout << "Reducao: " << exp << " mod phi(" << n << ") = " << exp_reduzido << endl;
+    cout << "Reducao: " << exp << " mod z(" << n << ") = " << exp_reduzido << endl;
 
     int resultado = modexp(a, exp_reduzido, n);
     cout << "Resultado final: " << resultado << endl;
@@ -203,14 +221,14 @@ int modexp(int base, int exp, int mod) {
 }         
 int exp_mod(int m, int e, int n, int z){
     if (e_primo(n)){
-        cout << "N = " << n << " e primo, usando Fermat";
+        cout << "Como N = " << n << " e primo, usamos Fermat";
         return Fermat(m, e, n);
     }
     else if (MDC_SemPrint(m, n) == 1){
-        cout << "MDC(" << m << ',' << n << ") = 1, usando Euler\n";
+        cout << "Como MDC(" << m << ',' << n << ") = 1, usamos Euler\n";
         return Euler(m, e, n, z);
     }
-
+    cout << "Como nao tem a condicao de N primo para usar fermat nem MDC(" << m << ',' << n << ")\n";
     return Euclidiana(m, e, n);
 }
 bool e_primo(int n) {   // como o numero so vai ate 999, posso testar se ele é divisivel por 2, 3, 5, 7, ...
@@ -312,9 +330,12 @@ int expoentePublico(int z, int n){
 int expoentePrivado(int e, int z){
     int t = 0, novo_t = 1;
     int r = z, novo_r = e;
-
+    int iter = 1;
+    cout << "Calculando inverso modular de " << e << " mod " << z << ":\n";
     while (novo_r != 0) {
         int quociente = r / novo_r;
+        cout << "Passo: " << iter << ", r = " << r << ", novo r = " << novo_r << ", t = " << t << ", novo t = " << novo_t << ", q = " << quociente << "\n";
+
         int temp = t;
         t = novo_t;
         novo_t = temp - quociente * novo_t;
@@ -322,14 +343,19 @@ int expoentePrivado(int e, int z){
         temp = r;
         r = novo_r;
         novo_r = temp - quociente * novo_r;
+        iter++;
     }
+    cout << "Ultimo r (mdc): " << r << ", coeficiente t = " << t << "\n";
 
     if (r > 1) {
         cout << "Nao existe inverso modular!\n";
         return -1;
     }
-    if (t < 0)
+    if (t < 0){  // Ajuste para T negativo
+        cout << "Como t e negativo, fazemos t+z\n";
+        cout << t << " + " << z << " = " << t+z << '\n';
         t += z;
+    }
 
     cout << "Expoente privado D encontrado: " << t << endl;
     return t;
