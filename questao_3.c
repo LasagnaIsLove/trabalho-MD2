@@ -9,8 +9,13 @@ int main()
     printf("Questao 3 - A Razao de Eficiencia de um Numero\n");
     printf("feito por:\n Gabriel Mota Oliveira - 241011081\n Matheus Pinheiro - 241025336\n\n");
 
-    printf("Por favor insira o numero que deseja descobrir a razao de eficiencia: ");
+    printf("Por favor insira o numero (1 - 105) que deseja descobrir a razao de eficiencia: ");
     scanf("%d", &num);
+    while(num < 1 || num > 105)
+    {
+        printf("Numero invalido, por favor inserir um numero entre 1 e 105: ");
+        scanf("%d", &num);
+    }
 
     int produto_de_primos[10];
     for (int i = 0; i < 10; i++)

@@ -9,16 +9,27 @@ int main()
     printf("feito por:\n Gabriel Mota Oliveira - 241011081\n Matheus Pinheiro - 241025336\n\n");
 
     int num;
-    printf("Insira o numero de chaves: ");
+    printf("Insira o numero de chaves (1 - 10): ");
     scanf("%d", &num);
+    while (num < 1 || num > 10)
+    {
+        printf("numero de chaves invalido, por favor insira um valor entre 1 e 10: ");
+        scanf("%d", &num);
+    }
 
-    printf("Insira os %d ciclos: \n", num);
+    printf("Insira os %d ciclos (2 - 20): \n", num);
     int ciclos[10];
     for (int i = 0; i < 10; i++)
         if (i < num)
         {
             printf("C%d: ", i + 1);
             scanf("%d", &ciclos[i]);
+            while (ciclos[i] < 2 || ciclos[i] > 20)
+            {
+                printf("Tamanho do ciclo invalido, por favor insira um valor entre 2 e 20\n");
+                printf("C%d: ", i + 1);
+                scanf("%d", &ciclos[i]);
+            }
         }
         else
             ciclos[i] = 0;
