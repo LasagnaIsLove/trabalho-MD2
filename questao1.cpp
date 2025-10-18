@@ -16,6 +16,7 @@ int MDC(int a, int b);
 int MDC_SemPrint(int a, int b); 
 int Pollard(int n); // Usa a função g(x) = ((x² + 1)mod(N)) e raiz X0 = 2
 int expoentePublico(int z, int n);  // Formula para encontrar o 'e'
+int expoentePrivadoSemPrint(int z, int n);
 int expoentePrivado(int e, int z);  //                          'd', usa euclides estendido
 vector<int> pre_Codificacao(string frase);  // Transforma as letras em codigo numerico de 2 casas
 bool e_primo(int n);                        // retorna se e primo ou nao
@@ -84,9 +85,34 @@ int main(){
 
     int n = P * Q;
     int z = (P-1)*(Q-1);
+    cout <<"-----------------------------\n"
+    <<     "[Encontrando a chave Publica]\n";
     int e = expoentePublico(z, n);
-    int d = expoentePrivado(e, z);  
 
+    cout <<"-----------------------------\n"
+    <<     "[Encontrando a chave Privada]\n";
+    int d = expoentePrivado(e, z);  
+    if(e >= z){
+        cout << "[AVISO], chave publica >= z, causara erro\nDeseja continuar? (S/N): ";
+        char opcao;
+        cin >> opcao;
+        if(opcao != 'S' && opcao != 's')
+            return 1;
+    }
+    if(e == -1){
+        cout << "A chave publica nao foi encontrada ou e igual a privada, logo nao podem ser usadas\nDeseja continuar? (S/N): ";
+        char opcao;
+        cin >> opcao;
+        if(opcao != 'S' && opcao != 's')
+            return 1;
+    }
+    if(d == 1){
+        cout << "[AVISO], chave privada = 1, causara erro\nDeseja continuar? (S/N): ";
+        char opcao;
+        cin >> opcao;
+        if(opcao != 'S')
+            return 1;
+    }
     // Etapa 3 - 
     // Criptografia:
     cout << "_____________________________________________\n";
@@ -319,14 +345,51 @@ int Pollard(int n) {
 
 int expoentePublico(int z, int n){
     int e = 2;
-    while(e < n && e < z){
-        if(MDC(e, z) == 1)
-            return e;
+    while(e < n){
+        if(MDC(e, z) == 1){
+            int d = expoentePrivadoSemPrint(e, z);
+            if (d != e)
+                return e;
+            else
+                cout << "Chave publica (" << e << ',' << n << ") encontrada mas e igual a privada, procurando outra chave publica...\n";
+        }
         e++;
     }
     return -1;
 }
+int expoentePrivadoSemPrint(int e, int z){
+    int t = 0, novo_t = 1;
+    int r = z, novo_r = e;
+    int iter = 1;
+    // cout << "Calculando inverso modular de " << e << " mod " << z << ":\n";
+    while (novo_r != 0) {
+        int quociente = r / novo_r;
+        // cout << "Passo: " << iter << ", r = " << r << ", novo r = " << novo_r << ", t = " << t << ", novo t = " << novo_t << ", q = " << quociente << "\n";
 
+        int temp = t;
+        t = novo_t;
+        novo_t = temp - quociente * novo_t;
+
+        temp = r;
+        r = novo_r;
+        novo_r = temp - quociente * novo_r;
+        iter++;
+    }
+    // cout << "Ultimo r (mdc): " << r << ", coeficiente t = " << t << "\n";
+
+    if (r > 1) {
+        // cout << "Nao existe inverso modular!\n";
+        return -1;
+    }
+    if (t < 0){  // Ajuste para T negativo
+        // cout << "Como t e negativo, fazemos t+z\n";
+        // cout << t << " + " << z << " = " << t+z << '\n';
+        t += z;
+    }
+
+    // cout << "Expoente privado D encontrado: " << t << endl;
+    return t;
+}
 int expoentePrivado(int e, int z){
     int t = 0, novo_t = 1;
     int r = z, novo_r = e;
