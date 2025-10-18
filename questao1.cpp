@@ -46,6 +46,7 @@ int LerEntrada(const char *s){              // Le a entrada garantindo que N est
 
 int main(){
     printName();
+    cout << "Questao 1:\n\tProjeto de Programacao: Sistema RSA com Fatoração ρ de Pollard e Aplicacao de Teoremas Modulares em Tres Etapas\n\n";
 
     cout << "Entre os valores de N1 e N2, eles devem ser produtos de primos *distintos* para que o metodo \"P de Polard\" seja eficiente.\n";
     
